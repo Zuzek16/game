@@ -1,3 +1,4 @@
+//rendering the menu / pause menu
 public class menu {
     static boolean isPauseMenu = false;
     static void draw(){
