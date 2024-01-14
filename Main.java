@@ -1,39 +1,61 @@
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.util.Random;
 import java.util.TimerTask;
 import java.util.Timer;
 //!THE obstacles need a class bc there will be a lot of them
-// main menu
 //pausing?
 //sounds
 //the moving thingy the player moves
-public class Main extends JPanel implements MouseInputListener {
+//after everytings done we can try make the player something more interesting than a cube
+public class Main extends JPanel implements MouseInputListener, KeyListener {
+
+    //NOW player
+
+    public static class Player {///??? can i move it out of main
+        static Color color = Color.orange;
+        static float maxHP = 5;
+        static float currentHP = maxHP;
+        static int height = 60;
+        static int width = 30;
+        static int x = (frame.getWidth()/2);
+        static int y = (frame.getHeight()/2);
+        static float speedY;
+        static float speedX;
+
+        static int directionX;
+        static int directionY;
+
+        static boolean w = false;
+        static boolean a = false;
+        static boolean s = false;
+        static boolean d = false;
+
+    }
+
     boolean gameStarted = false;
     int pointCounter = 0;
     private Color backgroundColor;
-    JFrame frame;
+    static JFrame frame;
     int[] btnPosition = {280,120};//x, y//should make its own obj and add the method for deceting collision
     int[] btnSize = {90,90};//width, height
 
     void moveBtn(){
         Random rnd = new Random();
         btnPosition[0] = rnd.nextInt(frame.getWidth()+(btnSize[0]/2))+(0-(btnSize[0]/2));
-//        System.out.println(btnPosition[0]);
         btnPosition[1] =  rnd.nextInt(frame.getHeight()+(btnSize[1]/2))+(0-(btnSize[1]));
 
     }
-
     void givePoints(){
         pointCounter ++;
     }
     void givePoints(int amount){
         pointCounter += amount;
     }
-
-
 
     public Main(Color backgroundColor, JFrame frame) {
         this.frame = frame;
@@ -42,7 +64,11 @@ public class Main extends JPanel implements MouseInputListener {
 
         setOpaque(true); // Make the JPanel opaque
         setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight())); // Set a preferred size
-        addMouseListener(this);
+        this.addMouseListener(this);
+        this.addKeyListener(this);
+
+        setFocusable(true);
+        requestFocus();
     }
 
     public void draw(Graphics g){
@@ -82,6 +108,41 @@ public class Main extends JPanel implements MouseInputListener {
             int scoreTextX = (getWidth() - g.getFontMetrics(g.getFont()).stringWidth("Score: ")) / 2;
             int scoreCounterX = scoreTextX + g.getFontMetrics(g.getFont()).stringWidth("Score: ");
             g.drawString(String.valueOf(pointCounter), scoreCounterX,g.getFontMetrics().getHeight());
+
+            //drawing the player
+ int speed = 13;
+            if (Player.w){
+                Player.speedY = speed;
+                Player.directionY = -1;
+            }
+            if (Player.a){
+                Player.speedX = speed;
+                Player.directionX = -1;
+
+            }
+            if (Player.s){
+                Player.speedY = speed;
+                Player.directionY = 1;
+
+            }
+            if (Player.d){
+                Player.speedX = speed;
+                Player.directionX = 1;
+
+            }
+
+            if ((Player.w || Player.s) && (Player.a || Player.d)) {
+                Player.speedX /= Math.sqrt(2);
+                Player.speedY /= Math.sqrt(2);
+            }
+//we can add so it "slides  " to crate a more fluid movement
+
+            Player.x += (Player.speedX)*Player.directionX;
+            Player.y += (Player.speedY)*Player.directionY;
+
+            g.setColor(Player.color);
+            g.fillRect(Player.x, Player.y, Player.width, Player.height);
+
         }
         g.setFont(defFont);
     }
@@ -96,17 +157,16 @@ public class Main extends JPanel implements MouseInputListener {
         String title = "Soup";
         int w = 1000;
         int h = 600;
+//        Obstacle sus = new Obstacle();
 
         JFrame frame = new JFrame(title);
-//        frame.setSize(w,h);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setSize(w,h);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);//maximazie the window
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Color backgroundColor = Color.darkGray;//this is also set within the main class, and so we stop passing the value to methods
         Main main = new Main(backgroundColor, frame);
         frame.add(main);
         frame.setVisible(true);
-//        System.out.println(frame.getWidth());////THIS NOW
-//        System.out.println(frame.getHeight());
         frame.setSize(frame.getWidth(), frame.getHeight());
         Timer timer = new Timer();
         int delay = 0;
@@ -114,31 +174,89 @@ public class Main extends JPanel implements MouseInputListener {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                // Your function here
-                System.out.println("x: "+main.btnPosition[0]);
-                System.out.println("y: "+main.btnPosition[1]);
                 frame.repaint();
-//                System.out.println("Your points: "+main.pointCounter);
-//                System.out.println("Function executed");//debug
             }
         }, delay, period);
-        //////try to make it move smoothy
-        ////fill the rect
-        ////dected a click in an area
-        /////make it intractable
-        //when you click the button it moves
-        //
         //we can create a function that  runs when a variavle is set to true by the click detecrot and then it sets it to false by the end of itself
-        //move its things to a separate class classBtn
-        //make sure it still works
     }
-//    private static void myTask() {
-//        System.out.println("Running");
-//    }
+@Override
+public void keyTyped(KeyEvent e) {
+    //for arrow keys
+    //up38
+    //left/37
+    //right39
+    //down40
+
+}
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int speed = 13;
+        //save which ones are still pressed down and make them matter
+        switch(e.getKeyChar()){
+            case 'w':
+//                Player.speed =
+                Player.speedY = speed;
+                Player.directionY = -1;
+                Player.w = true;
+                 break;
+            case 'a':
+                Player.speedX = speed;
+                Player.directionX = -1;
+                Player.a = true;
+
+                 break;
+            case 's':
+                Player.speedY = speed;
+                Player.directionY = 1;
+                Player.s = true;
+
+                break;
+            case 'd':
+                Player.speedX = speed;
+                Player.directionX = 1;
+                Player.d = true;
+
+
+                 break;
+        }
+
+        if ((e.getKeyChar() == 'w' || e.getKeyChar() == 's') && (e.getKeyChar() == 'a' || e.getKeyChar() == 'd')) {
+            Player.speedX /= Math.sqrt(2);
+            Player.speedY /= Math.sqrt(2);
+        }
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        switch(e.getKeyChar()){
+            case 'w':
+                Player.speedY = 0;
+                Player.w = false;
+
+                break;
+            case 'a':
+                Player.speedX = 0;
+                Player.a = false;
+
+                break;
+            case 's':
+                Player.speedY = 0;
+                Player.s = false;
+
+                break;
+            case 'd':
+                Player.speedX = 0;
+                Player.d = false;
+
+                break;
+
+        }
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
-//        System.out.println("You clicked: ");
-
         if (e.getX() >= btnPosition[0] &&
                 e.getX() <= (btnPosition[0]+btnSize[0]) &&
                 e.getY() >= btnPosition[1] &&
@@ -150,36 +268,29 @@ public class Main extends JPanel implements MouseInputListener {
             moveBtn();
         }
     }
-
     @Override
     public void mousePressed(MouseEvent e) {
-//        System.out.println("You pressed");
 
     }
-
     @Override
     public void mouseReleased(MouseEvent e) {
-//        System.out.println("You released");
 
     }
-
     @Override
     public void mouseEntered(MouseEvent e) {
 
     }
-
     @Override
     public void mouseExited(MouseEvent e) {
 
     }
-
     @Override
     public void mouseDragged(MouseEvent e) {
 
     }
-
     @Override
     public void mouseMoved(MouseEvent e) {
 
     }
+
 }
