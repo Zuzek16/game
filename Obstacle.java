@@ -16,7 +16,6 @@ public class Obstacle {
         colors.add(new Color(250, 128, 114));
         colors.add(new Color(240, 128, 128));
         colors.add(new Color(139, 23, 19));
-
     }
     int x;
     int y;
@@ -28,4 +27,8 @@ public class Obstacle {
     static float speedX;
     static int directionX;
     static int directionY;
+
+    void draw(){
+
+    }
 }
