@@ -7,6 +7,8 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
+//the scorearea isnt on the bottom
+
 
 //pausing?
 //dont use sprites use the cubes
@@ -15,6 +17,7 @@ import java.util.Timer;
 //later on or smth change the size and sape of socre area
 //how do the areas that the playerahs to be in look like>?>
 
+//button goes too far
 //sounds
 //after everytings done we can try make the player something more interesting than a cube + better movement
 public class Main extends JPanel implements MouseInputListener, KeyListener {
@@ -59,9 +62,13 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
 
     void moveBtn(){
         Random rnd = new Random();
-        btnPosition[0] = rnd.nextInt(frame.getWidth()+(btnSize[0]/2))+(0-(btnSize[0]/2));
-        btnPosition[1] =  rnd.nextInt(frame.getHeight()+(btnSize[1]/2))+(0-(btnSize[1]/2));
+        btnPosition[0] = rnd.nextInt((frame.getWidth()-btnSize[0])+(btnSize[0]/2))+(0-(btnSize[0]/2));
+        btnPosition[1] =  rnd.nextInt((frame.getHeight()-btnSize[1])+(btnSize[1]/2))+(0-(btnSize[1]/2));
+        //the place its in doesnt make any sense!
+        ScoreArea.x = rnd.nextInt((frame.getWidth()-ScoreArea.width)+(ScoreArea.width/2))+(0-(ScoreArea.width/2));
+        ScoreArea.y = rnd.nextInt((frame.getHeight()-ScoreArea.height)+(ScoreArea.height/2))+(0-(ScoreArea.height/2));
     }
+
     void givePoints(){
         pointCounter ++;
     }
@@ -84,6 +91,7 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
     }
 
     public void draw(Graphics g){
+        //move this after the else so that the socrearea can be on the bottom
         Font defFont = g.getFont();
         FontMetrics defFontMetrics = g.getFontMetrics();
         g.setColor(this.backgroundColor);
@@ -114,15 +122,9 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
             g.drawString("The buttons change position each time you click them.", btnPosition[0], yPosition);
         } else {
 //could do tutourial that you need to do the first click properly and not with out he player
-            //
-            //do this after the first click on the button in a fucing non running place
-//            ScoreArea.x = new Random().nextInt(frame.getWidth()+(ScoreArea.width/2))+(0-(ScoreArea.height/2));
             g.setColor(ScoreArea.color);
             g.fillRect(ScoreArea.x, ScoreArea.y, ScoreArea.width, ScoreArea.height);
-
-            for (int i = 0; i < 5; i++) {
-
-            }
+            //
             //draw each obstacle
             // NOW TO DO
             //move this to players methods XD
