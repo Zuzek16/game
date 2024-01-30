@@ -5,7 +5,6 @@ public class Obstacle {
     //as the game goes on we add new ones
     //make them curve in the direction of the player
     Obstacle (){
-
         colors.add(new Color(139, 0, 0));
         colors.add(new Color(255, 0, 0));
         colors.add(new Color(205, 92, 92));
@@ -27,8 +26,4 @@ public class Obstacle {
     static float speedX;
     static int directionX;
     static int directionY;
-
-    void draw(){
-
-    }
 }

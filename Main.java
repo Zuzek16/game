@@ -8,8 +8,6 @@ import java.util.*;
 import java.util.List;
 import java.util.Timer;
 //the scorearea isnt on the bottom
-
-
 //pausing?
 //dont use sprites use the cubes
 //player on or below the button?
@@ -42,11 +40,10 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
         static boolean a = false;
         static boolean s = false;
         static boolean d = false;
-
     }
 
     public static class ScoreArea {//the place you have to be to get points
-        static Color color = new Color(0xd64d4d);
+        static Color color = new Color(0xd64d4d);//TODO: change color to some transparency
         static int width = 95;//its width and height
         static int height = 95;//its width and height
         static int x = 0;
@@ -81,30 +78,27 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
         this.backgroundColor = backgroundColor;
         boolean test = true;
 
-        setOpaque(true); // Make the JPanel opaque
-        setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight())); // Set a preferred size
+        setOpaque(true);
+        setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight()));
         this.addMouseListener(this);
         this.addKeyListener(this);
-
         setFocusable(true);
         requestFocus();
     }
 
     public void draw(Graphics g){
-        //move this after the else so that the socrearea can be on the bottom
         Font defFont = g.getFont();
-        FontMetrics defFontMetrics = g.getFontMetrics();
+        // FontMetrics defFontMetrics = g.getFontMetrics();
         g.setColor(this.backgroundColor);
         g.fillRect(0,0,frame.getWidth()+100,frame.getHeight()+100);
         g.setColor(Color.black);
-        g.drawRect(btnPosition[0],btnPosition[1],btnSize[0],btnSize[1]);
-//        g.setColor(new Color(0x311B31));
-        g.setColor(new Color(0x6088));//cube color
+        // g.setColor(new Color(0x6088));//cube color
+        // g.fillRect(btnPosition[0],btnPosition[1],btnSize[0],btnSize[1]);
 
-        g.fillRect(btnPosition[0],btnPosition[1],btnSize[0],btnSize[1]);
-
-        g.setColor(Color.white);
         if (!gameStarted) {
+        g.setColor(new Color(0x6088));//cube color
+        g.fillRect(btnPosition[0],btnPosition[1],btnSize[0],btnSize[1]);
+        g.setColor(Color.white);
         g.drawString("Start game", (btnPosition[0]+(btnSize[0])/5),(btnPosition[1]+(btnSize[1])/2));
         g.setFont(new Font("Monospaced", Font.BOLD, 90));
         g.drawString("Soup", btnPosition[0]*2, btnPosition[1]+(60));//title
@@ -124,8 +118,9 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
 //could do tutourial that you need to do the first click properly and not with out he player
             g.setColor(ScoreArea.color);
             g.fillRect(ScoreArea.x, ScoreArea.y, ScoreArea.width, ScoreArea.height);
+            g.setColor(new Color(0x6088));//cube color
+            g.fillRect(btnPosition[0],btnPosition[1],btnSize[0],btnSize[1]);
             //
-            //draw each obstacle
             // NOW TO DO
             //move this to players methods XD
  int speed = 13;
@@ -155,6 +150,15 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
             g.setColor(Player.color);
             g.fillRect(Player.x, Player.y, Player.width, Player.height);
 //
+            //!! HWEWEdraw OBSTACLE
+                // for (Obstacle ob : obstacles) {
+                    
+                // }
+
+
+
+
+
             g.setColor(Color.white);
             g.setFont(new Font("default", Font.PLAIN, 20));
             g.drawString("Score: ", (getWidth() - g.getFontMetrics(g.getFont()).stringWidth("Score: 000000")) / 2, g.getFontMetrics().getHeight());
@@ -163,9 +167,7 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
             int scoreCounterX = scoreTextX + g.getFontMetrics(g.getFont()).stringWidth("Score: ");
             g.drawString(String.valueOf(pointCounter), scoreCounterX,g.getFontMetrics().getHeight());
         }
-
         g.setFont(defFont);
-
     }
 
     @Override
@@ -192,14 +194,12 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
         int period = 1000/60; //
 //        ScoreArea test = new ScoreArea();
 //        System.out.println(test.color);
-
         List<Obstacle> obstacles = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
             obstacles.add(new Obstacle());
         }
-
-        System.out.println(obstacles);
+        // System.out.println(obstacles);
 
         timer.schedule(new TimerTask() {
             @Override
