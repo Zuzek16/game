@@ -7,47 +7,89 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
-//the scorearea isnt on the bottom
 //pausing?
+//menu
+//normal extiting game with esc and a button
 //dont use sprites use the cubes
-//player on or below the button?
 //player stops at walls
 //later on or smth change the size and sape of socre area
 //how do the areas that the playerahs to be in look like>?>
-
-//button goes too far
 //sounds
 //after everytings done we can try make the player something more interesting than a cube + better movement
 public class Main extends JPanel implements MouseInputListener, KeyListener {
 
-    //NOW player
-
-    public static class Player {///??? can i move it out of main
-        static Color color = Color.orange;
-        static float maxHP = 5;
-        static float currentHP = maxHP;
-        static int height = 60;
-        static int width = 30;
-        static int x = (frame.getWidth()/2);
-        static int y = (frame.getHeight()/2);
-        static float speedY;
-        static float speedX;
-
-        static int directionX;
-        static int directionY;
-
+    public static class Player {
+        static private Color color = Color.orange;
+        static private float maxHP = 5;
+        static private float currentHP = maxHP;
+        static private int height = 60;
+        static private int width = 30;
+        static private int x = (frame.getWidth()/2);
+        static private int y = (frame.getHeight()/2);
+        static private float speedY;
+        static private float speedX;
+        static private int directionX;
+        static private int directionY;
         static boolean w = false;
         static boolean a = false;
         static boolean s = false;
         static boolean d = false;
+
+        static public int getX(){
+            return x;
+        }
+        static public void setX(int x){
+            x = x;
+        }
+
+        static public int getY(){
+            return y;
+        }
+        static public void setY(int y){
+            y = y;
+        }
+
+        static public int getWidth(){return width;}
+        static public int getHeight(){return height;}
+
+        static public void wallCollision(){
+            if ((Player.getX() + Player.getWidth()) > (frame.getWidth()/2)){
+                Player.setX(frame.getWidth()-Player.getWidth());
+            }
+
+            if (Player.getX() <= 0) {
+                Player.speedX = 0;
+            }
+//
+//            if (getY()+getHeight() < 0){//should be 0?
+//                speedY = 0;
+//                setY(0);
+//            }
+//
+//            if (getY() > frame.getHeight()){
+//                speedY = 0;
+//                setY(frame.getHeight()-getHeight());
+//            }
+
+
+        }
+
+        static public void obsacleCollision(){
+
+        }
     }
 
     public static class ScoreArea {//the place you have to be to get points
         static Color color = new Color(0xd64d4d);//TODO: change color to some transparency
-        static int width = 95;//its width and height
-        static int height = 95;//its width and height
-        static int x = 0;
-        static int y = 0;
+        static int width = 95;
+        static int height = 95;
+        static int x = new Random().nextInt((frame.getWidth()-ScoreArea.width)+(ScoreArea.width/2))+(0-(ScoreArea.width/2));//its too far away
+        static int y = new Random().nextInt((frame.getHeight()-ScoreArea.height)+(ScoreArea.height/2))+(0-(ScoreArea.height/2));
+
+        static void draw(Graphics g){
+            g.setColor(color);
+            g.fillRect(x, y, width, height);
+        }
     }
 
     boolean gameStarted = false;
@@ -98,6 +140,8 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
         if (!gameStarted) {
         g.setColor(new Color(0x6088));//cube color
         g.fillRect(btnPosition[0],btnPosition[1],btnSize[0],btnSize[1]);
+        g.setColor(Color.black);
+        g.drawRect(btnPosition[0],btnPosition[1],btnSize[0],btnSize[1]);
         g.setColor(Color.white);
         g.drawString("Start game", (btnPosition[0]+(btnSize[0])/5),(btnPosition[1]+(btnSize[1])/2));
         g.setFont(new Font("Monospaced", Font.BOLD, 90));
@@ -114,12 +158,30 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
             g.drawString("appearing around the screen.", btnPosition[0], yPosition);
             yPosition += lineHeight;
             g.drawString("The buttons change position each time you click them.", btnPosition[0], yPosition);
+
+            int testSize = 100;
+            g.setColor(Color.black);
+            g.fillRect(0, 0 , testSize, testSize);
+            g.fillRect(frame.getWidth() - testSize, 0, testSize, testSize);
+            g.fillRect(0, frame.getHeight(), testSize, testSize);
+            g.fillRect(frame.getWidth() - testSize, frame.getHeight(), testSize, testSize);
+
         } else {
 //could do tutourial that you need to do the first click properly and not with out he player
-            g.setColor(ScoreArea.color);
-            g.fillRect(ScoreArea.x, ScoreArea.y, ScoreArea.width, ScoreArea.height);
+//            g.setColor(ScoreArea.color);
+//            g.fillRect(ScoreArea.x, ScoreArea.y, ScoreArea.width, ScoreArea.height);
+            Main.ScoreArea.draw(g);
+
             g.setColor(new Color(0x6088));//cube color
             g.fillRect(btnPosition[0],btnPosition[1],btnSize[0],btnSize[1]);
+            g.setColor(Color.black);
+            g.drawRect(btnPosition[0],btnPosition[1],btnSize[0],btnSize[1]);
+
+
+            //kwadrat w każdym rogu
+
+
+
             //
             // NOW TO DO
             //move this to players methods XD
@@ -144,20 +206,20 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
                 Player.speedX /= Math.sqrt(2);
                 Player.speedY /= Math.sqrt(2);
             }//we can add so it "slides  " to crate a more fluid movement
+
             Player.x += (Player.speedX)*Player.directionX;
             Player.y += (Player.speedY)*Player.directionY;
+
+            Player.wallCollision();//check this yet/ doesntnt work
 
             g.setColor(Player.color);
             g.fillRect(Player.x, Player.y, Player.width, Player.height);
 //
+            
             //!! HWEWEdraw OBSTACLE
                 // for (Obstacle ob : obstacles) {
                     
                 // }
-
-
-
-
 
             g.setColor(Color.white);
             g.setFont(new Font("default", Font.PLAIN, 20));
@@ -178,17 +240,32 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
 
     public static void main(String[] args){
         String title = "Soup";
-        int w = 1000;
-        int h = 600;
+        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int)(size.getWidth()/4
+        );
+        int height = (int)(size.getHeight()/2);
         JFrame frame = new JFrame(title);
-        frame.setSize(w,h);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);//maximazie the window
+        //tutorial
+        JPanel panel = new JPanel();
+        panel.setBorder(BorderFactory.createEmptyBorder(width,height,width,height));//this might bug out
+        //tut
+        frame.setSize(width,height);
+        frame.add(panel, BorderLayout.CENTER);
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
+        frame.setLocation(x, y);
+//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);//maximazie the window
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Color backgroundColor = Color.darkGray;//this is also set within the main class, and so we stop passing the value to methods
         Main main = new Main(backgroundColor, frame);
+//NOW HOW TO MAKE THIS THING VIsible!!!
+        frame.pack();
+//
         frame.add(main);
         frame.setVisible(true);
-        frame.setSize(frame.getWidth(), frame.getHeight());
+        frame.setLocationRelativeTo(null);
+//        frame.setSize(frame.getWidth(), frame.getHeight());
         Timer timer = new Timer();
         int delay = 0;
         int period = 1000/60; //
@@ -199,7 +276,12 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
         for (int i = 0; i < 5; i++) {
             obstacles.add(new Obstacle());
         }
-        // System.out.println(obstacles);
+         System.out.println(obstacles);
+
+        for (Obstacle obs :
+                obstacles) {
+            System.out.println(obs.color);
+        }
 
         timer.schedule(new TimerTask() {
             @Override
@@ -246,14 +328,11 @@ public void keyTyped(KeyEvent e) {
                 Player.directionX = 1;
                 Player.d = true;
 
-
                  break;
             case 'e':
                //debug
                 System.out.println("button X: "+btnPosition[0]);
                 System.out.println("button Y: "+btnPosition[1]);
-
-
                 break;
         }
 
@@ -299,9 +378,17 @@ public void keyTyped(KeyEvent e) {
                 e.getY() <= (btnPosition[1]+btnSize[1])
         ){
             if (!gameStarted){gameStarted=true;}
-            System.out.println("Clicked the button - you got a point ");//still works - even on the moving cube
+
+            System.out.println("Clicked the button");//still works - even on the moving cube
+
+            if (Player.getX()+Player.getWidth() >= ScoreArea.x &&
+                    Player.getX() <= (ScoreArea.x+ScoreArea.width) &&
+                    Player.getY()+Player.getHeight() >= ScoreArea.y &&
+                    Player.getY() <= (ScoreArea.y+ScoreArea.height)
+            ){
             givePoints();
             moveBtn();
+            }
         }
     }
     @Override
