@@ -96,6 +96,9 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
     int pointCounter = 0;
     private Color backgroundColor;
     static JFrame frame;
+
+    static JPanel panel;
+
     int[] btnPosition = {280,120};//x, y//should make its own obj and add the method for deceting collision
     int[] btnSize = {90,90};//width, height
 
@@ -115,8 +118,9 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
         pointCounter += amount;
     }
 
-    public Main(Color backgroundColor, JFrame frame) {
+    public Main(Color backgroundColor, JFrame frame, JPanel panel) {
         this.frame = frame;
+        this.panel = panel;
         this.backgroundColor = backgroundColor;
         boolean test = true;
 
@@ -176,13 +180,7 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
             g.fillRect(btnPosition[0],btnPosition[1],btnSize[0],btnSize[1]);
             g.setColor(Color.black);
             g.drawRect(btnPosition[0],btnPosition[1],btnSize[0],btnSize[1]);
-
-
             //kwadrat w każdym rogu
-
-
-
-            //
             // NOW TO DO
             //move this to players methods XD
  int speed = 13;
@@ -214,13 +212,9 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
 
             g.setColor(Player.color);
             g.fillRect(Player.x, Player.y, Player.width, Player.height);
-//
-            
             //!! HWEWEdraw OBSTACLE
                 // for (Obstacle ob : obstacles) {
-                    
                 // }
-
             g.setColor(Color.white);
             g.setFont(new Font("default", Font.PLAIN, 20));
             g.drawString("Score: ", (getWidth() - g.getFontMetrics(g.getFont()).stringWidth("Score: 000000")) / 2, g.getFontMetrics().getHeight());
@@ -245,48 +239,36 @@ public class Main extends JPanel implements MouseInputListener, KeyListener {
         );
         int height = (int)(size.getHeight()/2);
         JFrame frame = new JFrame(title);
-        //tutorial
         JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createEmptyBorder(width,height,width,height));//this might bug out
-        //tut
         frame.setSize(width,height);
         frame.add(panel, BorderLayout.CENTER);
-        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
-        int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
-        frame.setLocation(x, y);
-//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);//maximazie the window
+        //play around with frame.pack posioton
+        frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Color backgroundColor = Color.darkGray;//this is also set within the main class, and so we stop passing the value to methods
-        Main main = new Main(backgroundColor, frame);
+        Main main = new Main(backgroundColor, frame, panel);
 //NOW HOW TO MAKE THIS THING VIsible!!!
-        frame.pack();
-//
         frame.add(main);
         frame.setVisible(true);
-        frame.setLocationRelativeTo(null);
-//        frame.setSize(frame.getWidth(), frame.getHeight());
+        frame.setLocationRelativeTo(null);//centering the window!! after setting the size
         Timer timer = new Timer();
         int delay = 0;
         int period = 1000/60; //
-//        ScoreArea test = new ScoreArea();
-//        System.out.println(test.color);
         List<Obstacle> obstacles = new ArrayList<>();
-
         for (int i = 0; i < 5; i++) {
             obstacles.add(new Obstacle());
         }
          System.out.println(obstacles);
-
-        for (Obstacle obs :
-                obstacles) {
+        for (Obstacle obs : obstacles) {
             System.out.println(obs.color);
         }
 
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                frame.repaint();
+//                frame.repaint();
+                panel.repaint();
             }
         }, delay, period);
         //we can create a function that  runs when a variavle is set to true by the click detecrot and then it sets it to false by the end of itself
